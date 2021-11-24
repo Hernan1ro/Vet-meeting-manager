@@ -5,12 +5,12 @@ const form = document.querySelector("#nueva-cita");
 const contenedorCitas = document.querySelector("#citas");
 
 // Selectores de inputs
-const mascota = document.querySelector("#mascota");
-const propietario = document.querySelector("#propietario");
-const telefono = document.querySelector("#telefono");
-const fecha = document.querySelector("#fecha");
-const hora = document.querySelector("#hora");
-const sintomas = document.querySelector("#sintomas");
+const mascotaInput = document.querySelector("#mascota");
+const propietarioInput = document.querySelector("#propietario");
+const telefonoInput = document.querySelector("#telefono");
+const fechaInput = document.querySelector("#fecha");
+const horaInput = document.querySelector("#hora");
+const sintomasInput = document.querySelector("#sintomas");
 
 // Objeto principal - Información del Usuario
 
@@ -23,18 +23,20 @@ const citaDatos = {
   hora: "",
   sintomas: "",
 };
+// modo edición
+let edicion;
 
 // Event listeners
 
 eventListeners();
 
 function eventListeners() {
-  propietario.addEventListener("input", handleInput);
-  sintomas.addEventListener("input", handleInput);
-  telefono.addEventListener("input", handleInput);
-  mascota.addEventListener("input", handleInput);
-  fecha.addEventListener("input", handleInput);
-  hora.addEventListener("input", handleInput);
+  propietarioInput.addEventListener("input", handleInput);
+  sintomasInput.addEventListener("input", handleInput);
+  telefonoInput.addEventListener("input", handleInput);
+  mascotaInput.addEventListener("input", handleInput);
+  fechaInput.addEventListener("input", handleInput);
+  horaInput.addEventListener("input", handleInput);
 
   form.addEventListener("submit", handleSubmit);
 }
@@ -117,6 +119,13 @@ class UIcitas {
       btnBorrar.onclick = () => {
         borrarCita(id);
       };
+      // botón editar
+      const btnEditar = document.createElement("button");
+      btnEditar.classList.add("btn", "btn-info");
+      btnEditar.innerHTML = "Editar";
+      btnEditar.onclick = () => editarCita(cita);
+
+      //Aañadir al DOM
       divCita.appendChild(mascotaParrafo);
       divCita.appendChild(propietarioParrafo);
       divCita.appendChild(telefonoParrafo);
@@ -124,6 +133,7 @@ class UIcitas {
       divCita.appendChild(horaParrafo);
       divCita.appendChild(sintomaParrafo);
       divCita.appendChild(btnBorrar);
+      divCita.appendChild(btnEditar);
 
       contenedorCitas.appendChild(divCita);
     });
@@ -155,10 +165,20 @@ function handleSubmit(e) {
     ui.imprimirAlert("Todos los campos debe estar llenos", "error");
     return;
   }
-  // crear un id para el objeto citaDatos
-  citaDatos.id = Date.now();
-  // Agregar cita a la lista de citas;
-  citas.agregarCita({ ...citaDatos });
+  if (edicion) {
+    console.log("modo edición");
+    ui.imprimirAlert("Editado correctamente");
+    form.querySelector('button[type="submit"]').textContent = "Crear cita";
+    edicion = false;
+    //Pasar objeto editado al estado
+  } else {
+    console.log("modo agregar cita");
+    // crear un id para el objeto citaDatos
+    citaDatos.id = Date.now();
+    // Agregar cita a la lista de citas;
+    citas.agregarCita({ ...citaDatos });
+    ui.imprimirAlert("Cita agendada correctamente");
+  }
   // Resetear formulario
   resetearFormulario();
   form.reset();
@@ -184,4 +204,29 @@ function borrarCita(id) {
   citas.removerCita(id);
   ui.imprimirCitas(citas);
   ui.imprimirAlert("Cita eliminada exitosamente");
+}
+
+// Iniciar modo edición
+
+function editarCita(cita) {
+  edicion = true;
+  // cambiar el texto del botón del formulario
+  form.querySelector('button[type="submit"]').textContent = "Guardar cambios";
+
+  // llena los input con la información de cita
+  const { propietario, telefono, mascota, fecha, hora, id, sintomas } = cita;
+  propietarioInput.value = propietario;
+  sintomasInput.value = sintomas;
+  telefonoInput.value = telefono;
+  mascotaInput.value = mascota;
+  fechaInput.value = fecha;
+  horaInput.value = hora;
+  //Llena el objeto en memoria
+  citaDatos.propietario = propietario;
+  citaDatos.telefono = telefono;
+  citaDatos.mascota = mascota;
+  citaDatos.fecha = fecha;
+  citaDatos.hora = hora;
+  citaDatos.sintomas = sintomas;
+  citaDatos.id = id;
 }
