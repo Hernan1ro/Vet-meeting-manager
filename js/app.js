@@ -53,6 +53,9 @@ class Citas {
   agregarCita(cita) {
     this.citas = [...this.citas, cita];
   }
+  removerCita(id) {
+    this.citas = this.citas.filter((cita) => cita.id !== id);
+  }
 }
 class UIcitas {
   imprimirAlert(mensaje, tipo) {
@@ -107,13 +110,20 @@ class UIcitas {
       sintomaParrafo.innerHTML = `
         <span class="font-weight-bolder">Sintomas:</span> ${sintomas}
       `;
-
+      // botón borrar
+      const btnBorrar = document.createElement("button");
+      btnBorrar.classList.add("btn", "btn-danger", "mr-2");
+      btnBorrar.innerHTML = "Eliminar cita";
+      btnBorrar.onclick = () => {
+        borrarCita(id);
+      };
       divCita.appendChild(mascotaParrafo);
       divCita.appendChild(propietarioParrafo);
       divCita.appendChild(telefonoParrafo);
       divCita.appendChild(fechaParrafo);
       divCita.appendChild(horaParrafo);
       divCita.appendChild(sintomaParrafo);
+      divCita.appendChild(btnBorrar);
 
       contenedorCitas.appendChild(divCita);
     });
@@ -166,4 +176,12 @@ function resetearFormulario() {
   citaDatos.fecha = "";
   citaDatos.hora = "";
   citaDatos.telefono = "";
+}
+
+// Borrar citas y altualizar Html
+
+function borrarCita(id) {
+  citas.removerCita(id);
+  ui.imprimirCitas(citas);
+  ui.imprimirAlert("Cita eliminada exitosamente");
 }
