@@ -14,7 +14,7 @@ const sintomas = document.querySelector("#sintomas");
 
 // Objeto principal - Información del Usuario
 
-let citaDatos = {
+const citaDatos = {
   mascota: "",
   propietario: "",
   telefono: "",
@@ -42,13 +42,16 @@ function eventListeners() {
 function handleInput(e) {
   e.preventDefault();
   citaDatos[e.target.name] = e.target.value;
-  console.log(citaDatos);
 }
 
 //Clases principales
 class Citas {
   constructor() {
     this.citas = [];
+  }
+  agregarCita(cita) {
+    this.citas = [...this.citas, cita];
+    console.log(this.citas);
   }
 }
 class UIcitas {
@@ -91,5 +94,20 @@ function handleSubmit(e) {
     ui.imprimirAlert("Todos los campos debe estar llenos", "error");
     return;
   }
-  console.log("validando");
+  // Agregar cita a la lista de citas;
+  citas.agregarCita({ ...citaDatos });
+  // Resetear formulario
+  resetearFormulario();
+  form.reset();
+}
+
+// Resetear los valores del objeto global -- infirmación del formulario
+
+function resetearFormulario() {
+  citaDatos.propietario = "";
+  citaDatos.mascota = "";
+  citaDatos.sintomas = "";
+  citaDatos.fecha = "";
+  citaDatos.hora = "";
+  citaDatos.telefono = "";
 }
