@@ -58,6 +58,11 @@ class Citas {
   removerCita(id) {
     this.citas = this.citas.filter((cita) => cita.id !== id);
   }
+  editarCita(citaActualizada) {
+    this.citas = this.citas.map((cita) =>
+      cita.id === citaActualizada.id ? citaActualizada : cita
+    );
+  }
 }
 class UIcitas {
   imprimirAlert(mensaje, tipo) {
@@ -166,13 +171,12 @@ function handleSubmit(e) {
     return;
   }
   if (edicion) {
-    console.log("modo edición");
     ui.imprimirAlert("Editado correctamente");
     form.querySelector('button[type="submit"]').textContent = "Crear cita";
     edicion = false;
     //Pasar objeto editado al estado
+    citas.editarCita({ ...citaDatos });
   } else {
-    console.log("modo agregar cita");
     // crear un id para el objeto citaDatos
     citaDatos.id = Date.now();
     // Agregar cita a la lista de citas;
