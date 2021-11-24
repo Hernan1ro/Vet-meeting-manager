@@ -15,6 +15,7 @@ const sintomas = document.querySelector("#sintomas");
 // Objeto principal - Información del Usuario
 
 const citaDatos = {
+  id: "",
   mascota: "",
   propietario: "",
   telefono: "",
@@ -51,7 +52,6 @@ class Citas {
   }
   agregarCita(cita) {
     this.citas = [...this.citas, cita];
-    console.log(this.citas);
   }
 }
 class UIcitas {
@@ -71,6 +71,57 @@ class UIcitas {
     setTimeout(() => {
       divMensaje.remove();
     }, 3000);
+  }
+  imprimirCitas({ citas }) {
+    this.limpiarHmtl();
+    citas.forEach((cita) => {
+      const { propietario, mascota, hora, telefono, sintomas, id, fecha } =
+        cita;
+      // creación del contenedor de los dato de la cita
+      const divCita = document.createElement("div");
+      divCita.classList.add("cita", "p-3");
+      divCita.dataset.id = id;
+
+      // scripting de los elementos de la cita
+      const mascotaParrafo = document.createElement("h2");
+      mascotaParrafo.classList.add("card-title", "font-weight-bolder");
+      mascotaParrafo.textContent = mascota;
+
+      const propietarioParrafo = document.createElement("p");
+      propietarioParrafo.innerHTML = `
+        <span class="font-weight-bolder">Propietario:</span> ${propietario}
+      `;
+      const telefonoParrafo = document.createElement("p");
+      telefonoParrafo.innerHTML = `
+        <span class="font-weight-bolder">Teléfono:</span> ${telefono}
+      `;
+      const fechaParrafo = document.createElement("p");
+      fechaParrafo.innerHTML = `
+        <span class="font-weight-bolder">Fecha:</span> ${fecha}
+      `;
+      const horaParrafo = document.createElement("p");
+      horaParrafo.innerHTML = `
+        <span class="font-weight-bolder">Hora:</span> ${hora}
+      `;
+      const sintomaParrafo = document.createElement("p");
+      sintomaParrafo.innerHTML = `
+        <span class="font-weight-bolder">Sintomas:</span> ${sintomas}
+      `;
+
+      divCita.appendChild(mascotaParrafo);
+      divCita.appendChild(propietarioParrafo);
+      divCita.appendChild(telefonoParrafo);
+      divCita.appendChild(fechaParrafo);
+      divCita.appendChild(horaParrafo);
+      divCita.appendChild(sintomaParrafo);
+
+      contenedorCitas.appendChild(divCita);
+    });
+  }
+  limpiarHmtl() {
+    while (contenedorCitas.firstChild) {
+      contenedorCitas.removeChild(contenedorCitas.firstChild);
+    }
   }
 }
 //instanciaciones de las clases para dejarlas disponible a nivel global
@@ -94,11 +145,16 @@ function handleSubmit(e) {
     ui.imprimirAlert("Todos los campos debe estar llenos", "error");
     return;
   }
+  // crear un id para el objeto citaDatos
+  citaDatos.id = Date.now();
   // Agregar cita a la lista de citas;
   citas.agregarCita({ ...citaDatos });
   // Resetear formulario
   resetearFormulario();
   form.reset();
+
+  // Agregar la lista de citas al Html
+  ui.imprimirCitas(citas);
 }
 
 // Resetear los valores del objeto global -- infirmación del formulario
