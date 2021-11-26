@@ -9,9 +9,11 @@ import {
 } from "../selectores.js";
 import { handleInput, handleSubmit } from "../functions.js";
 
+let DB;
 class App {
   constructor() {
     this.init();
+    this.crearDB();
   }
   init() {
     propietarioInput.addEventListener("input", handleInput);
@@ -22,6 +24,35 @@ class App {
     horaInput.addEventListener("input", handleInput);
 
     form.addEventListener("submit", handleSubmit);
+  }
+  crearDB() {
+    const crearDB = window.indexedDB.open("citas", 1);
+    crearDB.onerror = () => {
+      console.log("Ha habido un error al crear la base de datos");
+    };
+    crearDB.onsuccess = () => {
+      console.log("Base de datos creada exitosamente");
+      DB = crearDB.result;
+    };
+    // Definir el schema de la base de datos
+    crearDB.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      const objectStore = db.createObjectStore("citas", {
+        keyPath: "id",
+        autoIncrement: true,
+      });
+      // Definir las columnas
+      //Keypath
+      objectStore.createIndex("mascota", "mascota", { unique: false });
+      objectStore.createIndex("propietario", "propietario", { unique: false });
+      objectStore.createIndex("telefono", "telefono", { unique: false });
+      objectStore.createIndex("fecha", "fecha", { unique: false });
+      objectStore.createIndex("hora", "hora", { unique: false });
+      objectStore.createIndex("sintomas", "sintomas", { unique: false });
+      objectStore.createIndex("id", "id", { unique: true });
+
+      console.log("Base de datos creada y lista para la acción");
+    };
   }
 }
 
