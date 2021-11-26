@@ -1,3 +1,15 @@
+import Citas from "./classes/Citas.js";
+import UIcitas from "./classes/UI.js";
+import {
+  form,
+  propietarioInput,
+  sintomasInput,
+  telefonoInput,
+  fechaInput,
+  horaInput,
+  mascotaInput,
+} from "./selectores.js";
+
 //instanciaciones de las clases para dejarlas disponible a nivel global
 const citas = new Citas();
 const ui = new UIcitas();

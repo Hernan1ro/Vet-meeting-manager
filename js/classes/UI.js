@@ -1,3 +1,6 @@
+import { editarCita, borrarCita } from "../functions.js";
+import { contenedorCitas, container, contenido } from "../selectores.js";
+
 class UIcitas {
   imprimirAlert(mensaje, tipo) {
     const divMensaje = document.createElement("div");
