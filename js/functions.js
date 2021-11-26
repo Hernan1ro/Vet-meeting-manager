@@ -1,5 +1,7 @@
 import Citas from "./classes/Citas.js";
 import UIcitas from "./classes/UI.js";
+import { DB } from "./classes/App.js";
+
 import {
   form,
   propietarioInput,
@@ -62,7 +64,20 @@ export function handleSubmit(e) {
     citaDatos.id = Date.now();
     // Agregar cita a la lista de citas;
     citas.agregarCita({ ...citaDatos });
-    ui.imprimirAlert("Cita agendada correctamente");
+    // Agreagar la cita al IndexDB
+
+    //Insertar Registro en indexDB
+    let transaction = DB.transaction(["citas"], "readwrite");
+    //Habilitar el objectStore
+    const objectStore = transaction.objectStore("citas");
+    //Insertar en la BD
+    objectStore.add(citaDatos);
+    //Mostrar mensaje de guardado exitoso
+    transaction.onsuccesss = function () {
+      console.log("Cita añadida correctamente a la base de datos");
+      //Imprimir mensaje en el html
+      ui.imprimirAlert("Cita agendada correctamente");
+    };
   }
   // Resetear formulario
   resetearFormulario();

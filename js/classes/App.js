@@ -9,7 +9,7 @@ import {
 } from "../selectores.js";
 import { handleInput, handleSubmit } from "../functions.js";
 
-let DB;
+export let DB;
 class App {
   constructor() {
     this.init();
@@ -42,7 +42,7 @@ class App {
         autoIncrement: true,
       });
       // Definir las columnas
-      //Keypath
+      //----------------------------------Keypath
       objectStore.createIndex("mascota", "mascota", { unique: false });
       objectStore.createIndex("propietario", "propietario", { unique: false });
       objectStore.createIndex("telefono", "telefono", { unique: false });

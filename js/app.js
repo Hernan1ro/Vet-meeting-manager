@@ -5,3 +5,4 @@ window.onload = () => {
   console.log("Documento listo");
 };
 app.init();
+app.crearDB();
