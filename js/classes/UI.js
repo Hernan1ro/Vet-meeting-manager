@@ -85,6 +85,7 @@ class UIcitas {
         const btnEditar = document.createElement("button");
         btnEditar.classList.add("btn", "btn-info");
         btnEditar.innerHTML = "Editar";
+        const cita = cursor.value;
         btnEditar.onclick = () => editarCita(cita);
         //Aañadir al DOM
         divCita.appendChild(mascotaParrafo);

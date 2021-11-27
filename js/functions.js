@@ -55,11 +55,22 @@ export function handleSubmit(e) {
     return;
   }
   if (edicion) {
-    ui.imprimirAlert("Editado correctamente");
-    form.querySelector('button[type="submit"]').textContent = "Crear cita";
-    edicion = false;
     //Pasar objeto editado al estado
     citas.editarCita({ ...citaDatos });
+    // Edita los datos en IndexDB
+    const transaction = DB.transaction(["citas"], "readwrite");
+    const objectStore = transaction.objectStore("citas");
+
+    objectStore.put(citaDatos);
+
+    transaction.oncomplete = function () {
+      ui.imprimirAlert("Editado correctamente");
+      form.querySelector('button[type="submit"]').textContent = "Crear cita";
+      edicion = false;
+    };
+    transaction.onerror = function () {
+      console.log("Hubo un error");
+    };
   } else {
     // crear un id para el objeto citaDatos
     citaDatos.id = Date.now();
