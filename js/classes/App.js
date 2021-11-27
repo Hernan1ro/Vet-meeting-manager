@@ -8,6 +8,7 @@ import {
   mascotaInput,
 } from "../selectores.js";
 import { handleInput, handleSubmit } from "../functions.js";
+import { ui } from "../functions.js";
 
 export let DB;
 class App {
@@ -33,6 +34,8 @@ class App {
     crearDB.onsuccess = () => {
       console.log("Base de datos creada exitosamente");
       DB = crearDB.result;
+      // Mostrar citas al cargar (IndexDB debe estar listo)
+      ui.imprimirCitas();
     };
     // Definir el schema de la base de datos
     crearDB.onupgradeneeded = (e) => {

@@ -3,6 +3,7 @@ export const container = document.querySelector(".container");
 export const contenido = document.querySelector("#contenido");
 export const form = document.querySelector("#nueva-cita");
 export const contenedorCitas = document.querySelector("#citas");
+export const heading = document.querySelector("#administra");
 
 // Selectores de inputs
 export const mascotaInput = document.querySelector("#mascota");

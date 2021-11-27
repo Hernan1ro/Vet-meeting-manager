@@ -1,6 +1,7 @@
 import Citas from "./classes/Citas.js";
 import UIcitas from "./classes/UI.js";
 import { DB } from "./classes/App.js";
+// console.log(DB);
 
 import {
   form,
@@ -14,7 +15,7 @@ import {
 
 //instanciaciones de las clases para dejarlas disponible a nivel global
 const citas = new Citas();
-const ui = new UIcitas();
+export const ui = new UIcitas();
 // modo edición
 let edicion;
 
@@ -64,10 +65,10 @@ export function handleSubmit(e) {
     citaDatos.id = Date.now();
     // Agregar cita a la lista de citas;
     citas.agregarCita({ ...citaDatos });
-    // Agreagar la cita al IndexDB
-
+    ui.imprimirAlert("Cita agendada correctamente");
     //Insertar Registro en indexDB
     let transaction = DB.transaction(["citas"], "readwrite");
+    console.log("DB", DB);
     //Habilitar el objectStore
     const objectStore = transaction.objectStore("citas");
     //Insertar en la BD
@@ -84,7 +85,7 @@ export function handleSubmit(e) {
   form.reset();
 
   // Agregar la lista de citas al Html
-  ui.imprimirCitas(citas);
+  ui.imprimirCitas();
 }
 
 // Resetear los valores del objeto global -- infirmación del formulario
@@ -102,7 +103,7 @@ export function resetearFormulario() {
 
 export function borrarCita(id) {
   citas.removerCita(id);
-  ui.imprimirCitas(citas);
+  ui.imprimirCitas();
   ui.imprimirAlert("Cita eliminada exitosamente");
 }
 

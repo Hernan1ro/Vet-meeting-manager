@@ -1,5 +1,11 @@
 import { editarCita, borrarCita } from "../functions.js";
-import { contenedorCitas, container, contenido } from "../selectores.js";
+import {
+  contenedorCitas,
+  container,
+  contenido,
+  heading,
+} from "../selectores.js";
+import { DB } from "./App.js";
 class UIcitas {
   imprimirAlert(mensaje, tipo) {
     const divMensaje = document.createElement("div");
@@ -18,66 +24,90 @@ class UIcitas {
       divMensaje.remove();
     }, 3000);
   }
-  imprimirCitas({ citas }) {
+  imprimirCitas() {
+    //Limpia el HTML
     this.limpiarHmtl();
-    citas.forEach((cita) => {
-      const { propietario, mascota, hora, telefono, sintomas, id, fecha } =
-        cita;
-      // creación del contenedor de los dato de la cita
-      const divCita = document.createElement("div");
-      divCita.classList.add("cita", "p-3");
-      divCita.dataset.id = id;
+    //Valida elmensaje de bienvenida
+    this.textoHeading();
+    //Leer el contenido de la base de datos
+    const objectStore = DB.transaction("citas").objectStore("citas");
 
-      // scripting de los elementos de la cita
-      const mascotaParrafo = document.createElement("h2");
-      mascotaParrafo.classList.add("card-title", "font-weight-bolder");
-      mascotaParrafo.textContent = mascota;
+    const fnTextoHeading = this.textoHeading;
 
-      const propietarioParrafo = document.createElement("p");
-      propietarioParrafo.innerHTML = `
-        <span class="font-weight-bolder">Propietario:</span> ${propietario}
-      `;
-      const telefonoParrafo = document.createElement("p");
-      telefonoParrafo.innerHTML = `
-        <span class="font-weight-bolder">Teléfono:</span> ${telefono}
-      `;
-      const fechaParrafo = document.createElement("p");
-      fechaParrafo.innerHTML = `
-        <span class="font-weight-bolder">Fecha:</span> ${fecha}
-      `;
-      const horaParrafo = document.createElement("p");
-      horaParrafo.innerHTML = `
-        <span class="font-weight-bolder">Hora:</span> ${hora}
-      `;
-      const sintomaParrafo = document.createElement("p");
-      sintomaParrafo.innerHTML = `
-        <span class="font-weight-bolder">Sintomas:</span> ${sintomas}
-      `;
-      // botón borrar
-      const btnBorrar = document.createElement("button");
-      btnBorrar.classList.add("btn", "btn-danger", "mr-2");
-      btnBorrar.innerHTML = "Eliminar cita";
-      btnBorrar.onclick = () => {
-        borrarCita(id);
-      };
-      // botón editar
-      const btnEditar = document.createElement("button");
-      btnEditar.classList.add("btn", "btn-info");
-      btnEditar.innerHTML = "Editar";
-      btnEditar.onclick = () => editarCita(cita);
+    const total = objectStore.count();
+    total.onsuccess = function () {
+      fnTextoHeading(total.result);
+    };
 
-      //Aañadir al DOM
-      divCita.appendChild(mascotaParrafo);
-      divCita.appendChild(propietarioParrafo);
-      divCita.appendChild(telefonoParrafo);
-      divCita.appendChild(fechaParrafo);
-      divCita.appendChild(horaParrafo);
-      divCita.appendChild(sintomaParrafo);
-      divCita.appendChild(btnBorrar);
-      divCita.appendChild(btnEditar);
+    objectStore.openCursor().onsuccess = function (e) {
+      console.log(e.target.result);
+      const cursor = e.target.result;
 
-      contenedorCitas.appendChild(divCita);
-    });
+      if (cursor) {
+        const { propietario, mascota, hora, telefono, sintomas, id, fecha } =
+          cursor.value;
+        // creación del contenedor de los dato de la cita
+        const divCita = document.createElement("div");
+        divCita.classList.add("cita", "p-3");
+        divCita.dataset.id = id;
+        // scripting de los elementos de la cita
+        const mascotaParrafo = document.createElement("h2");
+        mascotaParrafo.classList.add("card-title", "font-weight-bolder");
+        mascotaParrafo.textContent = mascota;
+        const propietarioParrafo = document.createElement("p");
+        propietarioParrafo.innerHTML = `
+            <span class="font-weight-bolder">Propietario:</span> ${propietario}
+          `;
+        const telefonoParrafo = document.createElement("p");
+        telefonoParrafo.innerHTML = `
+            <span class="font-weight-bolder">Teléfono:</span> ${telefono}
+          `;
+        const fechaParrafo = document.createElement("p");
+        fechaParrafo.innerHTML = `
+            <span class="font-weight-bolder">Fecha:</span> ${fecha}
+          `;
+        const horaParrafo = document.createElement("p");
+        horaParrafo.innerHTML = `
+            <span class="font-weight-bolder">Hora:</span> ${hora}
+          `;
+        const sintomaParrafo = document.createElement("p");
+        sintomaParrafo.innerHTML = `
+            <span class="font-weight-bolder">Sintomas:</span> ${sintomas}
+          `;
+        // botón borrar
+        const btnBorrar = document.createElement("button");
+        btnBorrar.classList.add("btn", "btn-danger", "mr-2");
+        btnBorrar.innerHTML = "Eliminar cita";
+        btnBorrar.onclick = () => {
+          borrarCita(id);
+        };
+        // botón editar
+        const btnEditar = document.createElement("button");
+        btnEditar.classList.add("btn", "btn-info");
+        btnEditar.innerHTML = "Editar";
+        btnEditar.onclick = () => editarCita(cita);
+        //Aañadir al DOM
+        divCita.appendChild(mascotaParrafo);
+        divCita.appendChild(propietarioParrafo);
+        divCita.appendChild(telefonoParrafo);
+        divCita.appendChild(fechaParrafo);
+        divCita.appendChild(horaParrafo);
+        divCita.appendChild(sintomaParrafo);
+        divCita.appendChild(btnBorrar);
+        divCita.appendChild(btnEditar);
+        contenedorCitas.appendChild(divCita);
+
+        //Itera sobre el siguiente elemento
+        cursor.continue();
+      }
+    };
+  }
+  textoHeading(cantidad) {
+    if (cantidad > 0) {
+      heading.textContent = "Administra tus citas";
+    } else {
+      heading.textContent = "No hay citas, comienza creando una";
+    }
   }
   limpiarHmtl() {
     while (contenedorCitas.firstChild) {
