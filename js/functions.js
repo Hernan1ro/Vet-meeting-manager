@@ -113,9 +113,16 @@ export function resetearFormulario() {
 // Borrar citas y altualizar Html
 
 export function borrarCita(id) {
-  citas.removerCita(id);
-  ui.imprimirCitas();
-  ui.imprimirAlert("Cita eliminada exitosamente");
+  const transaction = DB.transaction(["citas"], "readwrite");
+  const objectStore = transaction.objectStore("citas");
+  objectStore.delete(id);
+  transaction.oncomplete = function () {
+    console.log(`La cita ${id} has sido eliminada`);
+    ui.imprimirCitas();
+  };
+  transaction.onerror = function () {
+    console.log("Hubo un error");
+  };
 }
 
 // Iniciar modo edición
