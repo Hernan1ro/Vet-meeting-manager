@@ -9,20 +9,23 @@ import { DB } from "./App.js";
 class UIcitas {
   imprimirAlert(mensaje, tipo) {
     const divMensaje = document.createElement("div");
-    divMensaje.classList.add("text-center", "d-block", "col-12", "alert");
-    // evalua el tipo de alerta
-    if (tipo === "error") {
-      divMensaje.classList.add("alert-danger");
-    } else {
-      divMensaje.classList.add("alert-success");
+    const alerta = document.querySelector(".alert");
+    if (!alerta) {
+      divMensaje.classList.add("text-center", "d-block", "col-12", "alert");
+      // evalua el tipo de alerta
+      if (tipo === "error") {
+        divMensaje.classList.add("alert-danger");
+      } else {
+        divMensaje.classList.add("alert-success");
+      }
+      // Mostrar el mensaje;
+      divMensaje.textContent = mensaje;
+      container.insertBefore(divMensaje, contenido);
+      // borrar el mensaje
+      setTimeout(() => {
+        divMensaje.remove();
+      }, 3000);
     }
-    // Mostrar el mensaje;
-    divMensaje.textContent = mensaje;
-    container.insertBefore(divMensaje, contenido);
-    // borrar el mensaje
-    setTimeout(() => {
-      divMensaje.remove();
-    }, 3000);
   }
   imprimirCitas() {
     //Limpia el HTML
@@ -40,7 +43,6 @@ class UIcitas {
     };
 
     objectStore.openCursor().onsuccess = function (e) {
-      console.log(e.target.result);
       const cursor = e.target.result;
 
       if (cursor) {

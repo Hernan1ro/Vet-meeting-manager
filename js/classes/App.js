@@ -32,7 +32,6 @@ class App {
       console.log("Ha habido un error al crear la base de datos");
     };
     crearDB.onsuccess = () => {
-      console.log("Base de datos creada exitosamente");
       DB = crearDB.result;
       // Mostrar citas al cargar (IndexDB debe estar listo)
       ui.imprimirCitas();
@@ -53,8 +52,6 @@ class App {
       objectStore.createIndex("hora", "hora", { unique: false });
       objectStore.createIndex("sintomas", "sintomas", { unique: false });
       objectStore.createIndex("id", "id", { unique: true });
-
-      console.log("Base de datos creada y lista para la acción");
     };
   }
 }

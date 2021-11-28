@@ -1,7 +1,6 @@
 import Citas from "./classes/Citas.js";
 import UIcitas from "./classes/UI.js";
 import { DB } from "./classes/App.js";
-// console.log(DB);
 
 import {
   form,
@@ -79,14 +78,12 @@ export function handleSubmit(e) {
     ui.imprimirAlert("Cita agendada correctamente");
     //Insertar Registro en indexDB
     let transaction = DB.transaction(["citas"], "readwrite");
-    console.log("DB", DB);
     //Habilitar el objectStore
     const objectStore = transaction.objectStore("citas");
     //Insertar en la BD
     objectStore.add(citaDatos);
     //Mostrar mensaje de guardado exitoso
     transaction.onsuccesss = function () {
-      console.log("Cita añadida correctamente a la base de datos");
       //Imprimir mensaje en el html
       ui.imprimirAlert("Cita agendada correctamente");
     };
@@ -117,8 +114,8 @@ export function borrarCita(id) {
   const objectStore = transaction.objectStore("citas");
   objectStore.delete(id);
   transaction.oncomplete = function () {
-    console.log(`La cita ${id} has sido eliminada`);
     ui.imprimirCitas();
+    ui.imprimirAlert("Cita eliminada", "error");
   };
   transaction.onerror = function () {
     console.log("Hubo un error");
